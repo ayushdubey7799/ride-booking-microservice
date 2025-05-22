@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+    jwtSecret : z3J8GsYgkGMREakTu7wRBz1+AzEgt78VFHkmdkqRtlgFHx/MY8FLGZirnrKFvhjY4wX3jZ+jxfRVWnp+FxGk5Q==
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/auth/**
+        - id: user-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/users/**
+        - id: booking-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/bookings/**
+
+
+logging:
+  level:
+    root: INFO
+    com.ridenow: DEBUG
