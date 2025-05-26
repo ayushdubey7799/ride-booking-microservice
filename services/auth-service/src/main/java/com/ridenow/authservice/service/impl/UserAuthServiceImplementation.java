@@ -1,6 +1,7 @@
 package com.ridenow.authservice.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ridenow.authservice.domain.Role;
 import com.ridenow.authservice.domain.UserAuthEntity;
 import com.ridenow.authservice.dto.UserAuthDto;
 import com.ridenow.authservice.messaging.kafka.KafkaProducerService;
@@ -40,6 +41,15 @@ public class UserAuthServiceImplementation implements UserAuthService {
         }
         catch (JsonProcessingException e){
             log.error("Exception occured " + e);
+        }
+    }
+
+    @Override
+    public void updateStatusToDriver(long l) {
+        UserAuthEntity userAuthEntity = userAuthEntityRepository.findById(l).orElse(null);
+        if(userAuthEntity!=null){
+            userAuthEntity.setRole(Role.DRIVER);
+            userAuthEntityRepository.save(userAuthEntity);
         }
     }
 }

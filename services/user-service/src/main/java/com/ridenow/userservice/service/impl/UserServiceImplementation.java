@@ -29,4 +29,6 @@ public class UserServiceImplementation implements UserService {
         userProfileRepository.save(UserProfileEntity.newInstance(userAuthDto));
         log.info("Profile created " + userAuthDto.getUsername());
     }
+
+
 }

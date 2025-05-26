@@ -10,4 +10,5 @@ public interface UserService {
     List<UserProfileEntity> getAllUsers();
 
     void createProfile(UserAuthDto userAuthDto);
+
 }

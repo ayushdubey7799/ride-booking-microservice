@@ -1,3 +1,64 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+*.sw?
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Maven
+target/
+.mvn/
+
+# Gradle
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Environment
+.env
+*.env
+
+# Docker
+**/Dockerfile~
+**/docker-compose*.override.yml
+**/.docker/
+**/.dockerignore
+
+# PostgreSQL volumes (if you're using bind mounts)
+pgdata*/
+
+# Kafka volumes (optional)
+kafka-data/
+zookeeper-data/
+
+# Redis volumes (if used)
+redis-data/
+
+# Node (if frontend exists)
+node_modules/
+dist/
+
+# Kubernetes (Phase 2)
+*.yaml~
+
+# IntelliJ cache
+out/
+
+# Logs
+logs/
+*.out

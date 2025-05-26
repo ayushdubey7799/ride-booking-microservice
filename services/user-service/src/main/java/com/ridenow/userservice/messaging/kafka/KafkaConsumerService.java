@@ -15,10 +15,11 @@ public class KafkaConsumerService {
     UserService userService;
 
     @KafkaListener(topics = "create-profile-topic", groupId = "my-group")
-    public void listen(String userAuthString) throws JsonProcessingException {
+    public void listenToAuthService(String userAuthString) throws JsonProcessingException {
         System.out.println("Received message: " + userAuthString);
         ObjectMapper mapper = new ObjectMapper();
         UserAuthDto userAuthDto = mapper.readValue(userAuthString, UserAuthDto.class);
         userService.createProfile(userAuthDto);
     }
+
 }

@@ -6,6 +6,12 @@
       <list>
         <option value="$PROJECT_DIR$/user-service/pom.xml" />
         <option value="$PROJECT_DIR$/gateway-service/pom.xml" />
+        <option value="$PROJECT_DIR$/auth-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/user-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/auth-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/gateway-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/driver-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/location-service/pom.xml" />
       </list>
     </option>
   </component>

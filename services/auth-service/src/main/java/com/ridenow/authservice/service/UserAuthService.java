@@ -5,4 +5,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserAuthService extends UserDetailsService {
     void save(UserAuthEntity userAuthEntity);
+
+    void updateStatusToDriver(long l);
 }
