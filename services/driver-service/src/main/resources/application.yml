@@ -1,8 +1,8 @@
 spring:
   application:
-    name: user-service
+    name: driver-service
   datasource:
-    url: jdbc:postgresql://user-db:5433/user_db
+    url: jdbc:postgresql://driver-db:5434/driver_db
     username: root
     password: post@ridenow
   jpa:
@@ -24,11 +24,11 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
   redis:
-    host: redis
-    port: 6379
+    host: ${SPRING_DATA_REDIS_HOST:redis}
+    port: ${SPRING_DATA_REDIS_PORT:6379}
 
 server:
-  port: 8082
+  port: 8083
 
 logging:
   level:

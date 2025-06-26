@@ -6,6 +6,8 @@ services:
     container_name: gateway-service
     ports:
       - "8080:8080"
+    networks:
+      - ride-now-network
 
   auth-service:
     build: ./services/auth-service
@@ -18,6 +20,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: post@ridenow
     depends_on:
       - auth-db
+    networks:
+      - ride-now-network
 
   user-service:
     build: ./services/user-service
@@ -30,6 +34,59 @@ services:
       SPRING_DATASOURCE_PASSWORD: post@ridenow
     depends_on:
       - user-db
+    networks:
+      - ride-now-network
+
+  driver-service:
+    build: ./services/driver-service
+    container_name: driver-service
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://driver-db:5432/driver_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: post@ridenow
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    depends_on:
+      - driver-db
+      - redis
+    networks:
+      - ride-now-network
+
+  booking-service:
+    build: ./services/booking-service
+    container_name: booking-service
+    ports:
+      - "8084:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-db:5432/booking_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: post@ridenow
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    depends_on:
+      - booking-db
+      - redis
+    networks:
+      - ride-now-network
+
+  realtime-gateway-service:
+    build:
+      context: ./services/realtime-gateway-service
+    container_name: realtime-gateway-service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - REDIS_URL=redis://redis:6379
+      - KAFKA_BROKERS=kafka:9092
+    depends_on:
+      - kafka
+      - redis
+    networks:
+      - ride-now-network
+
 
   auth-db:
     image: postgres:15
@@ -42,6 +99,8 @@ services:
       - "5432:5432"
     volumes:
       - auth_data:/var/lib/postgresql/data
+    networks:
+      - ride-now-network
 
   user-db:
     image: postgres:15
@@ -54,6 +113,36 @@ services:
       - "5433:5432"
     volumes:
       - user_data:/var/lib/postgresql/data
+    networks:
+      - ride-now-network
+
+  driver-db:
+    image: postgres:15
+    container_name: driver-db
+    environment:
+      POSTGRES_DB: driver_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: post@ridenow
+    ports:
+      - "5434:5432"
+    volumes:
+      - driver_data:/var/lib/postgresql/data
+    networks:
+      - ride-now-network
+
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: post@ridenow
+    ports:
+      - "5435:5432"
+    volumes:
+      - booking_data:/var/lib/postgresql/data
+    networks:
+      - ride-now-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -63,6 +152,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    networks:
+      - ride-now-network
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -74,9 +165,12 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_DELETE_TOPIC_ENABLE: "true"
+    networks:
+      - ride-now-network
 
   redis:
     image: redis:7.2-alpine
@@ -87,9 +181,22 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
     restart: unless-stopped
+    networks:
+      - ride-now-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
     auth_data:
     user_data:
+    driver_data:
+    booking_data:
     redis_data:
+
+networks:
+  ride-now-network:
+    driver: bridge
 

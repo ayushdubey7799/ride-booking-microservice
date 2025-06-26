@@ -17,9 +17,12 @@ public class RouteConfig {
                 .route("user-service", r -> r.path("/api/users/**")
                         .filters(f -> f.filter(jwtFilter.apply(new JwtAuthFilter.Config())))
                         .uri("http://user-service:8082"))
-                .route("booking-service", r -> r.path("/api/bookings/**")
+                .route("driver-service", r -> r.path("/api/drivers/**")
                         .filters(f -> f.filter(jwtFilter.apply(new JwtAuthFilter.Config())))
-                        .uri("http://booking-service:8083"))
+                        .uri("http://driver-service:8083"))
+                .route("booking-service", r -> r.path("/api/booking/**")
+                        .filters(f -> f.filter(jwtFilter.apply(new JwtAuthFilter.Config())))
+                        .uri("http://booking-service:8084"))
                 .build();
     }
 }

@@ -1,16 +1,16 @@
 spring:
   application:
-    name: user-service
-  datasource:
-    url: jdbc:postgresql://user-db:5433/user_db
-    username: root
-    password: post@ridenow
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+    name: location-service
+#  datasource:
+#    url: jdbc:postgresql://user-db:5433/user_db
+#    username: root
+#    password: post@ridenow
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
   kafka:
     bootstrap-servers: kafka:9092
     consumer:
@@ -28,7 +28,7 @@ spring:
     port: 6379
 
 server:
-  port: 8082
+  port: 8084
 
 logging:
   level:

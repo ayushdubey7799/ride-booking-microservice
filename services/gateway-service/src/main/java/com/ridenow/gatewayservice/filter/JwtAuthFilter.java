@@ -9,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -50,11 +51,11 @@ public class JwtAuthFilter implements GatewayFilterFactory<JwtAuthFilter.Config>
                         .getBody();
 
                 String userId = claims.getSubject();
-                String role = (String) claims.get("role");
+                List<String> roles = claims.get("roles", List.class);
 
                 ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                         .header("X-User-Id", userId)
-                        .header("X-User-Role", role)
+                        .header("X-User-Role", String.join(",", roles))
                         .build();
 
                 return chain.filter(exchange.mutate().request(mutatedRequest).build());

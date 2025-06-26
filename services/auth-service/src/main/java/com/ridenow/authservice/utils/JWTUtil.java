@@ -1,5 +1,6 @@
 package com.ridenow.authservice.utils;
 
+import com.ridenow.authservice.domain.UserAuthEntity;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
-import java.security.KeyStore;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JWTUtil {
@@ -23,10 +24,12 @@ public class JWTUtil {
         return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS512.getJcaName());
     }
 
-    public String generateToken(String username, long expiryMinutes){
+    public String generateToken(UserAuthEntity userAuth, List<String> roles, long expiryMinutes){
+
         return Jwts
                 .builder()
-                .subject(username)
+                .subject(userAuth.getId().toString())
+                .claim("roles",roles)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiryMinutes * 60 * 1000))
                 .signWith(getSigningKey(),SignatureAlgorithm.HS512)

@@ -1,6 +1,7 @@
 package com.ridenow.authservice.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ridenow.authservice.domain.UserAuthEntity;
 import com.ridenow.authservice.dto.LoginRequest;
 import com.ridenow.authservice.utils.JWTUtil;
 import jakarta.servlet.FilterChain;
@@ -10,9 +11,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -38,7 +41,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword());
         Authentication authResult = authenticationManager.authenticate(authenticationToken);
         if(authResult.isAuthenticated()){
-            String token = jwtUtil.generateToken(authResult.getName(),15);
+            UserAuthEntity userDetails = (UserAuthEntity) authResult.getPrincipal();
+            List<String> roles = userDetails.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
+            String token = jwtUtil.generateToken(userDetails,roles,15);
             response.setHeader("Authorization", "Bearer " + token);
         }
     }

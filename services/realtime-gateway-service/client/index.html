@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Driver App</title>
+</head>
+<body>
+  <h1>Driver Socket Client</h1>
+  <p>Status: <span id="status">Disconnected</span></p>
+  <p>Waiting for ride offers...</p>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+          integrity="sha384-H7cGo3Y4k70F+cKsZxJ6sVa6eCiANQ9v2B3Dy1v2azFwC+Ubf4hGXjC+v4Rt1sJx"
+          crossorigin="anonymous"></script>
+  <script>
+    const driverId = ""; // Manually set the driverId here
+    const socket = io("http://realtime-gateway:3001");
+
+    socket.on("connect", () => {
+      document.getElementById("status").textContent = "Connected";
+      console.log("Connected with socket ID:", socket.id);
+
+      // Register this driver with the backend
+      socket.emit("register-driver", driverId);
+      console.log(`Registered driverId: ${driverId}`);
+    });
+
+    socket.on("disconnect", () => {
+      document.getElementById("status").textContent = "Disconnected";
+    });
+
+    // Listen for ride offers from server
+    socket.on("ride-offer", (rideRequest) => {
+      console.log("Received ride request:", rideRequest);
+
+      let responded = false;
+
+      // Show confirm dialog to accept or reject
+      const accepted = confirm(
+        `New ride request!\nPickup: (${rideRequest.pickupLat}, ${rideRequest.pickupLng})\nVehicle Type: ${rideRequest.vehicleType}\nAccept?`
+      );
+
+      if (!responded) {
+        responded = true;
+        socket.emit("ride-response", {
+          accepted,
+          driverId
+        });
+        console.log("Sent ride-response:", { accepted, driverId });
+      }
+
+      // Auto-reject fallback after 10 seconds
+      setTimeout(() => {
+        if (!responded) {
+          responded = true;
+          socket.emit("ride-response", {
+            accepted: false,
+            driverId
+          });
+          console.log("Auto-rejected due to timeout");
+        }
+      }, 10000);
+    });
+  </script>
+</body>
+</html>
