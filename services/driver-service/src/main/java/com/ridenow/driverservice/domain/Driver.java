@@ -17,6 +17,13 @@ public class Driver {
     @Column(unique = true)
     private long userId;
 
+    @Column(nullable = true)
+    private Double latitude;
+
+    @Column(nullable = true)
+    private Double longitude;
+
+
     @Enumerated(EnumType.STRING)
     private DriverStatus status;
 

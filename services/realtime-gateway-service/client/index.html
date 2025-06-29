@@ -9,12 +9,12 @@
   <p>Status: <span id="status">Disconnected</span></p>
   <p>Waiting for ride offers...</p>
 
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
-          integrity="sha384-H7cGo3Y4k70F+cKsZxJ6sVa6eCiANQ9v2B3Dy1v2azFwC+Ubf4hGXjC+v4Rt1sJx"
-          crossorigin="anonymous"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
   <script>
-    const driverId = ""; // Manually set the driverId here
-    const socket = io("http://realtime-gateway:3001");
+    const driverId = prompt("Enter driver ID:");
+ // Manually set the driverId here
+    const socket = io("http://localhost:3001");
 
     socket.on("connect", () => {
       document.getElementById("status").textContent = "Connected";

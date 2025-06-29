@@ -111,6 +111,11 @@ public class BookingServiceImplementation implements BookingService {
     public void updateMatchResult(MatchingResultDto matchingResultDto) {
       log.info("=====> " + matchingResultDto.getDriverId());
         log.info("=====> " + matchingResultDto.getStatus());
-
+       Booking booking = bookingRepository.findById(matchingResultDto.getBookingId()).orElse(null);
+       if(booking!=null){
+           booking.setStatus("ASSIGNED");
+           booking.setDriverId(matchingResultDto.getDriverId());
+           bookingRepository.save(booking);
+       }
     }
 }

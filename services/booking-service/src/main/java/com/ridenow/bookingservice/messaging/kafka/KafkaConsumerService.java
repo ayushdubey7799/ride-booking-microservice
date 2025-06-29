@@ -15,11 +15,11 @@ public class KafkaConsumerService {
     @Autowired
     private BookingService bookingService;
 
-    @KafkaListener(topics = "ride-matching-result-topic", groupId = "realtime-gateway")
+    @KafkaListener(topics = "ride-matching-result-topic", groupId = "realtime-gateway-java")
     public void listenToMatchingService(String payload) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        MatchingResultDto matchingResultDto = mapper.convertValue(payload, MatchingResultDto.class);
-        bookingService.updateMatchResult(matchingResultDto);
+        MatchingResultDto dto = mapper.readValue(payload, MatchingResultDto.class);
+        bookingService.updateMatchResult(dto);
     }
 }
 
